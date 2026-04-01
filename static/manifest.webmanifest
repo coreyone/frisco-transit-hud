@@ -1,0 +1,9 @@
+{
+	"name": "Frisco Transit",
+	"short_name": "Frisco",
+	"description": "A San Francisco transit app built around realtime trust.",
+	"start_url": "/",
+	"display": "standalone",
+	"background_color": "#dfe8e3",
+	"theme_color": "#b73324"
+}

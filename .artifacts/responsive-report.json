@@ -1,0 +1,58 @@
+[
+  {
+    "name": "responsive-home-mobile-v2",
+    "path": "http://127.0.0.1:4173/",
+    "width": 393,
+    "scrollWidth": 393,
+    "bodyScrollWidth": 393,
+    "horizontalOverflow": false
+  },
+  {
+    "name": "responsive-plan-mobile-v2",
+    "path": "http://127.0.0.1:4173/plan",
+    "width": 393,
+    "scrollWidth": 393,
+    "bodyScrollWidth": 393,
+    "horizontalOverflow": false
+  },
+  {
+    "name": "responsive-home-tablet-v2",
+    "path": "http://127.0.0.1:4173/",
+    "width": 834,
+    "scrollWidth": 834,
+    "bodyScrollWidth": 834,
+    "horizontalOverflow": false
+  },
+  {
+    "name": "responsive-plan-tablet-v2",
+    "path": "http://127.0.0.1:4173/plan",
+    "width": 834,
+    "scrollWidth": 834,
+    "bodyScrollWidth": 834,
+    "horizontalOverflow": false
+  },
+  {
+    "name": "responsive-home-desktop-v2",
+    "path": "http://127.0.0.1:4173/",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "bodyScrollWidth": 1440,
+    "horizontalOverflow": false
+  },
+  {
+    "name": "responsive-plan-desktop-v2",
+    "path": "http://127.0.0.1:4173/plan",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "bodyScrollWidth": 1440,
+    "horizontalOverflow": false
+  },
+  {
+    "name": "responsive-route-desktop-v2",
+    "path": "http://127.0.0.1:4173/",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "bodyScrollWidth": 1440,
+    "horizontalOverflow": false
+  }
+]
