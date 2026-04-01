@@ -144,32 +144,57 @@ function getEtaDisplay(arrival: ArrivalWithContext | null) {
 				</div>
 			</div>
 
-			<!-- Main Vector Vector (Active Direction) -->
-			<div class={`relative mt-6 flex items-center justify-between rounded-2xl bg-white/5 p-6 border border-white/5 transition-all duration-300 ${activeArrival ? 'opacity-100 scale-100' : 'opacity-40 scale-95'}`}>
-				{#key activeDirIdx}
-					<div class="space-y-1.5 flex-1 min-w-0 transition-all">
-						<p class="text-[0.6rem] font-black uppercase tracking-[0.3em] text-[#00aaff]/60 flex items-center gap-2">
-							<MoveRight size={10} />
-							{directions[activeDirIdx]}
+			<!-- Regional Vector Grid (Side-by-side on desktop, Single focus with swipe on mobile) -->
+			<div class="mt-6 space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-4">
+				<!-- Direction A (Mobile: Focus 0, Desktop: Always visible) -->
+				<div class={`relative flex items-center justify-between rounded-2xl bg-white/5 p-5 border border-white/5 transition-all duration-300 ${activeDirIdx === 0 ? 'opacity-100 scale-100' : 'opacity-40 scale-95 sm:opacity-100 sm:scale-100'}`}>
+					<div class="space-y-1 flex-1 min-w-0">
+						<p class="text-[0.55rem] font-black uppercase tracking-[0.3em] text-[#00aaff]/60 flex items-center gap-2">
+							<MoveRight size={9} />
+							{directions[0]}
 						</p>
-						<h4 class="text-xl font-black text-white truncate pr-4">
-							{activeArrival?.headsign || 'Calculating...'}
+						<h4 class="text-base font-black text-white truncate pr-4">
+							{arrivalsByDirection[directions[0]]?.[0]?.headsign || 'Seeking...'}
 						</h4>
-						<div class="h-1 w-24 bg-[#00aaff]/10 rounded-full overflow-hidden mt-3">
+						<div class="h-1 w-16 bg-[#00aaff]/10 rounded-full overflow-hidden mt-3">
 							<div 
 								class="h-full bg-[#00aaff] transition-all duration-1000"
-								style="width: {activeArrival ? Math.min(100, Math.max(10, 100 - (activeArrival.etaSeconds / 1800) * 100)) : 0}%"
+								style="width: {arrivalsByDirection[directions[0]]?.[0] ? Math.min(100, Math.max(10, 100 - (arrivalsByDirection[directions[0]][0].etaSeconds / 1800) * 100)) : 0}%"
 							></div>
 						</div>
 					</div>
-
 					<div class="flex flex-col items-end">
-						<span class={`font-black leading-none ${emphasis ? 'text-6xl' : 'text-5xl'} text-[#00aaff] tracking-tighter tabular-nums`}>
-							{getEtaDisplay(activeArrival)}
+						<span class={`font-black leading-none ${emphasis ? 'text-4xl' : 'text-3xl'} text-[#00aaff] tracking-tighter tabular-nums`}>
+							{getEtaDisplay(arrivalsByDirection[directions[0]]?.[0] || null)}
 						</span>
-						<span class="text-[0.6rem] font-black uppercase text-[#00aaff]/40 tracking-[0.25em] mt-2">Minutes</span>
+						<span class="text-[0.5rem] font-black uppercase text-[#00aaff]/40 tracking-widest mt-1">Min</span>
 					</div>
-				{/key}
+				</div>
+
+				<!-- Direction B (Mobile: Focus 1, Desktop: Always visible) -->
+				<div class={`relative flex items-center justify-between rounded-2xl bg-white/5 p-5 border border-white/5 transition-all duration-300 ${activeDirIdx === 1 ? 'opacity-100 scale-100' : 'opacity-40 scale-95 sm:opacity-100 sm:scale-100'}`}>
+					<div class="space-y-1 flex-1 min-w-0">
+						<p class="text-[0.55rem] font-black uppercase tracking-[0.3em] text-[#00aaff]/60 flex items-center gap-2">
+							<MoveRight size={9} />
+							{directions[1]}
+						</p>
+						<h4 class="text-base font-black text-white truncate pr-4">
+							{arrivalsByDirection[directions[1]]?.[0]?.headsign || 'Seeking...'}
+						</h4>
+						<div class="h-1 w-16 bg-[#00aaff]/10 rounded-full overflow-hidden mt-3">
+							<div 
+								class="h-full bg-[#00aaff] transition-all duration-1000"
+								style="width: {arrivalsByDirection[directions[1]]?.[0] ? Math.min(100, Math.max(10, 100 - (arrivalsByDirection[directions[1]][0].etaSeconds / 1800) * 100)) : 0}%"
+							></div>
+						</div>
+					</div>
+					<div class="flex flex-col items-end">
+						<span class={`font-black leading-none ${emphasis ? 'text-4xl' : 'text-3xl'} text-[#00aaff] tracking-tighter tabular-nums`}>
+							{getEtaDisplay(arrivalsByDirection[directions[1]]?.[0] || null)}
+						</span>
+						<span class="text-[0.5rem] font-black uppercase text-[#00aaff]/40 tracking-widest mt-1">Min</span>
+					</div>
+				</div>
 			</div>
 
 			<div class="flex items-center justify-between border-t border-[#00aaff]/10 pt-4 mt-6">
