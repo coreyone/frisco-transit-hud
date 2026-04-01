@@ -27,6 +27,7 @@ const nearestArrival = $derived(
 
 let activeDirIdx = $state(0);
 let touchStartX = 0;
+let lastSwipeTime = 0;
 
 function handleTouchStart(e: TouchEvent) {
 	touchStartX = e.changedTouches[0].screenX;
@@ -36,11 +37,23 @@ function handleTouchEnd(e: TouchEvent) {
 	const touchEndX = e.changedTouches[0].screenX;
 	const diff = touchStartX - touchEndX;
 	
-	// Threshold for swipe
 	if (Math.abs(diff) > 40) {
 		activeDirIdx = activeDirIdx === 0 ? 1 : 0;
 		if (typeof navigator !== 'undefined' && navigator.vibrate) {
 			navigator.vibrate(10);
+		}
+	}
+}
+
+function handleWheel(e: WheelEvent) {
+	// Only care about horizontal swipes (trackpad)
+	if (Math.abs(e.deltaX) > 40 && Date.now() - lastSwipeTime > 800) {
+		activeDirIdx = activeDirIdx === 0 ? 1 : 0;
+		lastSwipeTime = Date.now();
+		
+		// If it's a clear horizontal swipe, prevent back/forward navigation
+		if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+			// e.preventDefault(); // Optional: can be annoying if they want to go back
 		}
 	}
 }
@@ -62,6 +75,7 @@ function getEtaDisplay(arrival: ArrivalWithContext | null) {
 		tabindex="0"
 		ontouchstart={handleTouchStart}
 		ontouchend={handleTouchEnd}
+		onwheel={handleWheel}
 		onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') activeDirIdx = activeDirIdx === 0 ? 1 : 0; }}
 	>
 		<!-- Left: Route Identity -->
@@ -104,6 +118,7 @@ function getEtaDisplay(arrival: ArrivalWithContext | null) {
 		tabindex="0"
 		ontouchstart={handleTouchStart}
 		ontouchend={handleTouchEnd}
+		onwheel={handleWheel}
 		onclick={() => { activeDirIdx = activeDirIdx === 0 ? 1 : 0; }}
 		onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') activeDirIdx = activeDirIdx === 0 ? 1 : 0; }}
 	>
