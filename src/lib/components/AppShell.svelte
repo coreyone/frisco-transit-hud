@@ -113,8 +113,8 @@ onMount(() => {
 		</div>
 	{/if}
 
-	<main class="shell-main flex-1 overflow-y-auto scrollbar-hide">
-		<div class="mx-auto max-w-7xl px-4 pt-4 pb-48 sm:px-6 lg:px-8">
+	<main class="shell-main flex-1 overflow-y-auto scrollbar-hide pb-safe">
+		<div class="mx-auto max-w-7xl px-4 pt-4 pb-24 sm:px-6 lg:px-8">
 			{@render children()}
 		</div>
 	</main>
@@ -122,7 +122,7 @@ onMount(() => {
 	<!-- Persistent Control & Status Layer (CHROME) -->
 	<div class="shell-chrome fixed bottom-0 left-0 right-0 z-50 flex flex-col pointer-events-none">
 		<!-- TAB NAVIGATION -->
-		<nav class="p-1.5 bg-black/60 backdrop-blur-3xl border-t border-white/5 pointer-events-auto">
+		<nav class="p-1 px-4 pb-safe bg-black/60 backdrop-blur-3xl border-t border-white/5 pointer-events-auto">
 			<div class="flex w-full gap-1">
 				{#each tabs as tab (tab.href)}
 					{@const active = isTabActive(tab.href, page.url.pathname)}
@@ -132,36 +132,10 @@ onMount(() => {
 						href={tab.href}
 					>
 						<tab.icon size={18} class={active ? 'scale-110' : ''} />
-						<span class="text-[0.5rem] font-black uppercase tracking-[0.25em]">{tab.label}</span>
+						<span class="text-[0.45rem] font-bold uppercase tracking-[0.2em]">{tab.label}</span>
 					</a>
 				{/each}
 			</div>
 		</nav>
-
-		<!-- VECTOR NETWORK FOOTER (As requested) -->
-		<footer class="p-3 pb-safe bg-[#050b14] border-t border-white/5 flex items-center justify-between pointer-events-auto">
-			<div class="flex items-center gap-3">
-				<div class="flex flex-col">
-					<p class="text-[0.6rem] font-black tracking-[0.2em] text-white/50 m-0! leading-none">LIVE</p>
-					<p class="mt-1 text-[0.45rem] font-bold text-white/20 uppercase tracking-widest leading-none">
-						SFMTA • BART • CALTRAIN
-					</p>
-				</div>
-			</div>
-
-			<div class="flex items-center gap-4 text-right">
-				<div class="flex flex-col items-end">
-					<p class="text-[0.5rem] font-black uppercase tracking-[0.2em] text-white/30 leading-none">
-						{$networkState.connected ? 'NETWORK: OK' : 'OFFLINE'}
-					</p>
-					<p class="mt-1 text-[0.55rem] font-bold text-white/50 leading-none tabular-nums">
-						{$refreshMeta.lastSuccessAt ? formatTime($refreshMeta.lastSuccessAt) : 'SYNC'}
-					</p>
-				</div>
-				<div class="relative flex h-1.5 w-1.5">
-					<div class={`h-full w-full rounded-full ${$networkState.connected ? 'bg-(--signal-go) shadow-[0_0_8px_var(--signal-go)]' : 'bg-(--signal-now) shadow-[0_0_8px_var(--signal-now)]'}`}></div>
-				</div>
-			</div>
-		</footer>
 	</div>
 </div>

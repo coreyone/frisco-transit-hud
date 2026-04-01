@@ -296,8 +296,7 @@ export async function schedulePlanReminder(planId: string) {
 		id: Math.abs(
 			Array.from(planId).reduce(
 				(hash, char) => (hash * 31 + char.charCodeAt(0)) | 0,
-				0,
-				0,
+				0
 			),
 		),
 		title: 'Leave in 5 min',
