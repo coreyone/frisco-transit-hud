@@ -28,7 +28,7 @@ export async function loadTransitSnapshot({
 	previous,
 	userLocation = DEFAULT_USER_LOCATION,
 }: LoadTransitSnapshotArgs = {}) {
-	const mode = env.PUBLIC_TRANSIT_DATA_MODE ?? 'mock';
+	const mode = env.PUBLIC_TRANSIT_DATA_MODE ?? 'live';
 	const endpoint = env.PUBLIC_TRANSIT_DATA_ENDPOINT;
 
 	if (mode !== 'mock' && endpoint && isSafeTransitEndpoint(endpoint)) {
