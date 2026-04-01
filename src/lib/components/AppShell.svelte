@@ -100,66 +100,68 @@ onMount(() => {
 	<title>{currentMeta.title} · Frisco Transit</title>
 </svelte:head>
 
-<div class="shell-frame bg-(--surface)">
-	<div class="shell-chrome">
-		<header class="shell-header px-6 py-4 backdrop-blur-xl border-b border-white/5 bg-black/20">
-			<div class="flex items-center justify-between gap-4">
-				<div class="flex items-center gap-4">
-					{#if currentMeta.backHref}
-						<a
-							class="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 hover:bg-white/10 transition-all active:scale-95"
-							href={currentMeta.backHref}
-						>
-							<ChevronLeft size={16} class="text-white/60" />
-						</a>
-					{/if}
-					
-					<div class="flex flex-col">
-						<h1 class="text-[0.65rem] font-black uppercase tracking-[0.4em] text-white/40 leading-none">
-							{currentMeta.title}
-						</h1>
-						{#if page.url.pathname === '/'}
-							<p class="mt-1 text-[0.5rem] font-bold text-white/20 uppercase tracking-widest">SFMTA • BART • CALTRAIN</p>
-						{/if}
-					</div>
-				</div>
+<div class="shell-frame bg-(--surface) overflow-hidden max-h-screen">
+	<!-- Top Bar (Back Button only if needed) -->
+	{#if currentMeta.backHref}
+		<div class="absolute top-4 left-4 z-40">
+			<a
+				class="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-xl border border-white/10 hover:bg-black/60 transition-all active:scale-95 shadow-xl"
+				href={currentMeta.backHref}
+			>
+				<ChevronLeft size={20} class="text-white" />
+			</a>
+		</div>
+	{/if}
 
-				<div class="flex items-center gap-5">
-					<div class="hidden sm:flex flex-col items-end">
-						<p class="text-[0.5rem] font-black uppercase tracking-[0.3em] text-white/20">
-							{$networkState.connected ? 'NETWORK: OK' : 'OFFLINE'}
-						</p>
-						<p class="mt-0.5 text-[0.6rem] font-bold text-white/40 tabular-nums">
-							{$refreshMeta.lastSuccessAt ? formatTime($refreshMeta.lastSuccessAt) : 'SYNC'}
-						</p>
-					</div>
-					<div class="relative flex h-2 w-2">
-						<div class={`h-2 w-2 rounded-full ${$networkState.connected ? 'bg-(--signal-go) shadow-[0_0_8px_var(--signal-go)]' : 'bg-(--signal-now) shadow-[0_0_8px_var(--signal-now)]'}`}></div>
-					</div>
-				</div>
-			</div>
-		</header>
+	<main class="shell-main">
+		<div class="mx-auto max-w-7xl px-4 pt-4 pb-48 sm:px-6 lg:px-8">
+			{@render children()}
+		</div>
+	</main>
 
-		<nav class="shell-nav p-1.5 bg-black/40 backdrop-blur-3xl border-t border-white/5">
+	<!-- Persistent Control & Status Layer (CHROME) -->
+	<div class="shell-chrome fixed bottom-0 left-0 right-0 z-50 flex flex-col pointer-events-none">
+		<!-- TAB NAVIGATION -->
+		<nav class="p-1.5 bg-black/60 backdrop-blur-3xl border-t border-white/5 pointer-events-auto">
 			<div class="flex w-full gap-1">
 				{#each tabs as tab (tab.href)}
 					{@const active = isTabActive(tab.href, page.url.pathname)}
 					<a
 						aria-current={active ? 'page' : undefined}
-						class={`flex-1 flex flex-col items-center justify-center gap-1.5 py-4 transition-all rounded-2xl ${active ? 'bg-white/5 text-white' : 'text-white/30 hover:text-white/50'}`}
+						class={`flex-1 flex flex-col items-center justify-center gap-1 py-3 transition-all rounded-xl ${active ? 'bg-white/10 text-white shadow-inner' : 'text-white/30 hover:text-white/50'}`}
 						href={tab.href}
 					>
-						<tab.icon size={16} class={active ? 'scale-110' : ''} />
-						<span class="text-[0.55rem] font-black uppercase tracking-[0.25em]">{tab.label}</span>
+						<tab.icon size={18} class={active ? 'scale-110' : ''} />
+						<span class="text-[0.5rem] font-black uppercase tracking-[0.25em]">{tab.label}</span>
 					</a>
 				{/each}
 			</div>
 		</nav>
-	</div>
 
-	<main class="shell-main">
-		<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-			{@render children()}
-		</div>
-	</main>
+		<!-- VECTOR NETWORK FOOTER (As requested) -->
+		<footer class="p-3 pb-safe bg-[#050b14] border-t border-white/5 flex items-center justify-between pointer-events-auto">
+			<div class="flex items-center gap-3">
+				<div class="flex flex-col">
+					<p class="text-[0.6rem] font-black tracking-[0.2em] text-white/50 m-0! leading-none">LIVE</p>
+					<p class="mt-1 text-[0.45rem] font-bold text-white/20 uppercase tracking-widest leading-none">
+						SFMTA • BART • CALTRAIN
+					</p>
+				</div>
+			</div>
+
+			<div class="flex items-center gap-4 text-right">
+				<div class="flex flex-col items-end">
+					<p class="text-[0.5rem] font-black uppercase tracking-[0.2em] text-white/30 leading-none">
+						{$networkState.connected ? 'NETWORK: OK' : 'OFFLINE'}
+					</p>
+					<p class="mt-1 text-[0.55rem] font-bold text-white/50 leading-none tabular-nums">
+						{$refreshMeta.lastSuccessAt ? formatTime($refreshMeta.lastSuccessAt) : 'SYNC'}
+					</p>
+				</div>
+				<div class="relative flex h-1.5 w-1.5">
+					<div class={`h-full w-full rounded-full ${$networkState.connected ? 'bg-(--signal-go) shadow-[0_0_8px_var(--signal-go)]' : 'bg-(--signal-now) shadow-[0_0_8px_var(--signal-now)]'}`}></div>
+				</div>
+			</div>
+		</footer>
+	</div>
 </div>

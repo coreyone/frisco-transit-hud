@@ -96,7 +96,7 @@ const SF_ROUTES: Route[] = [
 function getStopsForLocation(userLoc: Coordinates): Stop[] {
 	const sfDist = haversineDistanceMeters(userLoc, DEFAULT_USER_LOCATION);
 	
-	if (sfDist < 1000) {
+	if (sfDist < 20000) {
 		return [
 			...SF_STOPS,
 			{
@@ -129,7 +129,7 @@ function getStopsForLocation(userLoc: Coordinates): Stop[] {
 		{
 			id: 'local-vector-1',
 			agencyId: 'frisco',
-			name: 'North Local Nexus',
+			name: 'Station Square',
 			neighborhood: 'Current sector',
 			routes: ['vector-alpha', 'vector-beta'],
 			platforms: ['Standard Platform'],
@@ -140,7 +140,7 @@ function getStopsForLocation(userLoc: Coordinates): Stop[] {
 		{
 			id: 'local-vector-2',
 			agencyId: 'frisco',
-			name: 'Main Axis Station',
+			name: 'Grand Avenue',
 			neighborhood: 'Central Sector',
 			routes: ['vector-alpha'],
 			platforms: ['Main Platform'],
@@ -154,7 +154,7 @@ function getStopsForLocation(userLoc: Coordinates): Stop[] {
 function getRoutesForLocation(userLoc: Coordinates): Route[] {
 	const sfDist = haversineDistanceMeters(userLoc, DEFAULT_USER_LOCATION);
 	
-	if (sfDist < 1000) {
+	if (sfDist < 20000) {
 		return [
 			...SF_ROUTES,
 			{
@@ -252,7 +252,12 @@ export function buildMockSnapshot(
 	previous?: TransitSnapshot,
 	userLocation = DEFAULT_USER_LOCATION,
 ): TransitSnapshot {
-	const stops = getStopsForLocation(userLocation);
+	const sfDist = userLocation
+		? haversineDistanceMeters(userLocation, DEFAULT_USER_LOCATION)
+		: 0;
+
+	// Use real SF stops if we're in SF (within 20km), otherwise use proxy stops
+	const stops = sfDist < 20000 ? SF_STOPS : getStopsForLocation(userLocation);
 	const routes = getRoutesForLocation(userLocation);
 	const arrivals = makeArrivals(now, stops, routes, previous);
 

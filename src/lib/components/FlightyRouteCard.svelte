@@ -25,6 +25,28 @@ const nearestArrival = $derived(
 	[dirA, dirB].filter(Boolean).sort((a, b) => (a?.distanceMeters ?? 0) - (b?.distanceMeters ?? 0))[0]
 );
 
+let activeDirIdx = $state(0);
+let touchStartX = 0;
+
+function handleTouchStart(e: TouchEvent) {
+	touchStartX = e.changedTouches[0].screenX;
+}
+
+function handleTouchEnd(e: TouchEvent) {
+	const touchEndX = e.changedTouches[0].screenX;
+	const diff = touchStartX - touchEndX;
+	
+	// Threshold for swipe
+	if (Math.abs(diff) > 40) {
+		activeDirIdx = activeDirIdx === 0 ? 1 : 0;
+		if (typeof navigator !== 'undefined' && navigator.vibrate) {
+			navigator.vibrate(10);
+		}
+	}
+}
+
+const activeArrival = $derived(getNext(activeDirIdx));
+
 function getEtaDisplay(arrival: ArrivalWithContext | null) {
 	if (!arrival) return '--';
 	if (arrival.etaSeconds <= 45) return '0';
@@ -34,32 +56,40 @@ function getEtaDisplay(arrival: ArrivalWithContext | null) {
 
 {#if compact}
 	<!-- RAPID SCAN MOBILE HUD (As requested by user screenshot) -->
-	<div class="group relative flex items-center justify-between gap-4 bg-[#0a1b2b] p-6 border-b border-[#1a2b3b]/50 hover:bg-[#0d2236] transition-all">
+	<div 
+		class="group relative flex items-center justify-between gap-4 bg-[#0a1b2b] p-6 border-b border-[#1a2b3b]/50 hover:bg-[#0d2236] transition-all overflow-hidden cursor-pointer select-none"
+		role="button"
+		tabindex="0"
+		ontouchstart={handleTouchStart}
+		ontouchend={handleTouchEnd}
+		onkeydown={(e) => { if (e.key === 'Enter' || e.key === ' ') activeDirIdx = activeDirIdx === 0 ? 1 : 0; }}
+	>
 		<!-- Left: Route Identity -->
-		<div class="flex flex-col min-w-0">
+		<div class="flex flex-col min-w-0 transition-all duration-300">
 			<span class="text-[3.25rem] font-black leading-none tracking-tighter text-[#00aaff]">
 				{route.shortName}
 			</span>
 			<div class="mt-2 flex items-center gap-2 text-[#00aaff] font-bold text-lg leading-tight">
 				<MoveRight size={18} class="shrink-0" />
-				<span class="truncate">{dirA?.headsign || 'Mission District'}</span>
+				<span class="truncate">{activeArrival?.headsign || directions[activeDirIdx]}</span>
 			</div>
 			<span class="mt-1 text-[0.65rem] font-bold uppercase tracking-widest text-[#00aaff]/40 truncate">
-				{nearestArrival?.stop.name || 'Nearby Stop'}
+				{activeArrival?.stop.name || 'Nearby Stop'}
 			</span>
 		</div>
 
-		<!-- Center: Contextual Status (Simulated) -->
-		<div class="absolute left-1/2 top-6 -translate-x-1/2 flex gap-1 items-center opacity-40">
-			<div class="h-1.5 w-1.5 rounded-full bg-[#00aaff]"></div>
-			<div class="h-1.5 w-1.5 rounded-full bg-[#1a2b3b]"></div>
+		<!-- Center: Contextual Status (Pagination Indicators) -->
+		<div class="absolute left-1/2 bottom-4 -translate-x-1/2 flex gap-1.5 items-center">
+			{#each directions as _, i}
+				<div class={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${activeDirIdx === i ? 'bg-[#00aaff] scale-125' : 'bg-[#1a2b3b]'}`}></div>
+			{/each}
 		</div>
 
 		<!-- Right: Critical Telemetry (ETA) -->
-		<div class="flex flex-col items-end gap-0">
+		<div class="flex flex-col items-end gap-0 transition-all duration-300">
 			<div class="relative">
 				<span class="text-[3.25rem] font-black leading-none tracking-tighter text-[#00aaff]">
-					{getEtaDisplay(dirA)}
+					{getEtaDisplay(activeArrival)}
 				</span>
 				<Radio size={14} class="absolute -top-1 -right-4 text-[#00aaff] animate-pulse" />
 			</div>
