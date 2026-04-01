@@ -100,7 +100,7 @@ onMount(() => {
 	<title>{currentMeta.title} · Frisco Transit</title>
 </svelte:head>
 
-<div class="shell-frame bg-(--surface) overflow-hidden max-h-screen">
+<div class="shell-frame bg-(--surface) flex flex-col h-screen overflow-hidden">
 	<!-- Top Bar (Back Button only if needed) -->
 	{#if currentMeta.backHref}
 		<div class="absolute top-4 left-4 z-40">
@@ -113,7 +113,7 @@ onMount(() => {
 		</div>
 	{/if}
 
-	<main class="shell-main">
+	<main class="shell-main flex-1 overflow-y-auto scrollbar-hide">
 		<div class="mx-auto max-w-7xl px-4 pt-4 pb-48 sm:px-6 lg:px-8">
 			{@render children()}
 		</div>

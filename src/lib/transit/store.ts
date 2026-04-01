@@ -116,7 +116,7 @@ export const activeGoPlanId = persistentStore<string | null>(
 export const nearbyArrivals = derived(
 	[snapshot, userLocation],
 	([$snapshot, $userLocation]) =>
-		getNearbyArrivals($snapshot, $userLocation, 1200, 24),
+		getNearbyArrivals($snapshot, $userLocation, 10000, 24),
 );
 
 export const favoriteCollections = derived(
