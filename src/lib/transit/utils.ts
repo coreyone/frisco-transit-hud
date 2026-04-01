@@ -144,9 +144,9 @@ export function getNearbyArrivals(
 
 	return Array.from(vectorMap.values())
 		.sort((a, b) => {
-			const timeDiff = a.etaSeconds - b.etaSeconds;
-			if (Math.abs(timeDiff) > 45) return timeDiff;
-			return a.distanceMeters - b.distanceMeters;
+			const distDiff = (a.distanceMeters ?? 0) - (b.distanceMeters ?? 0);
+			if (Math.abs(distDiff) > 100) return distDiff;
+			return a.etaSeconds - b.etaSeconds;
 		})
 		.slice(0, limit);
 }
