@@ -99,7 +99,7 @@ function getEtaDisplay(arrival: ArrivalWithContext | null) {
 {:else}
 	<!-- Standard 'Flighty' Panel Card -->
 	<div 
-		class={`group relative flex flex-col overflow-hidden transition-all duration-300 cursor-pointer select-none ${emphasis ? 'ds-panel-strong bg-[#0a1b2b] shadow-elevated scale-[1.01] z-10' : 'ds-panel bg-[#0a1b2b]/80 shadow-lg'}`}
+		class={`group relative flex flex-col overflow-hidden transition-all duration-300 cursor-pointer select-none touch-pan-y ${emphasis ? 'ds-panel-strong bg-[#0a1b2b] shadow-elevated scale-[1.01] z-10' : 'ds-panel bg-[#0a1b2b]/80 shadow-lg'}`}
 		role="button"
 		tabindex="0"
 		ontouchstart={handleTouchStart}
@@ -136,43 +136,45 @@ function getEtaDisplay(arrival: ArrivalWithContext | null) {
 				
 				<div class="flex flex-col items-end gap-1">
 					<Radio size={14} class="text-[#00aaff]/40 animate-pulse" />
-					<div class="flex gap-1">
+					<div class="flex gap-1.5">
 						{#each directions as _, i}
-							<div class={`h-1 w-1 rounded-full transition-all duration-300 ${activeDirIdx === i ? 'bg-[#00aaff] scale-125' : 'bg-[#1a2b3b]'}`}></div>
+							<div class={`h-1 w-2 rounded-full transition-all duration-300 ${activeDirIdx === i ? 'bg-[#00aaff] w-4 opacity-100' : 'bg-white/10 opacity-30'}`}></div>
 						{/each}
 					</div>
 				</div>
 			</div>
 
 			<!-- Main Vector Vector (Active Direction) -->
-			<div class={`relative mt-6 flex items-center justify-between rounded-2xl bg-white/5 p-6 border border-white/5 transition-all duration-500 ${activeArrival ? 'opacity-100' : 'opacity-40'}`}>
-				<div class="space-y-1.5 flex-1 min-w-0">
-					<p class="text-[0.6rem] font-black uppercase tracking-[0.3em] text-[#00aaff]/60 flex items-center gap-2">
-						<MoveRight size={10} />
-						{directions[activeDirIdx]}
-					</p>
-					<h4 class="text-xl font-black text-white truncate pr-4">
-						{activeArrival?.headsign || 'Calculating...'}
-					</h4>
-					<div class="h-1 w-24 bg-[#00aaff]/10 rounded-full overflow-hidden mt-3">
-						<div 
-							class="h-full bg-[#00aaff]"
-							style="width: {activeArrival ? Math.min(100, Math.max(10, 100 - (activeArrival.etaSeconds / 1800) * 100)) : 0}%"
-						></div>
+			<div class={`relative mt-6 flex items-center justify-between rounded-2xl bg-white/5 p-6 border border-white/5 transition-all duration-300 ${activeArrival ? 'opacity-100 scale-100' : 'opacity-40 scale-95'}`}>
+				{#key activeDirIdx}
+					<div class="space-y-1.5 flex-1 min-w-0 transition-all">
+						<p class="text-[0.6rem] font-black uppercase tracking-[0.3em] text-[#00aaff]/60 flex items-center gap-2">
+							<MoveRight size={10} />
+							{directions[activeDirIdx]}
+						</p>
+						<h4 class="text-xl font-black text-white truncate pr-4">
+							{activeArrival?.headsign || 'Calculating...'}
+						</h4>
+						<div class="h-1 w-24 bg-[#00aaff]/10 rounded-full overflow-hidden mt-3">
+							<div 
+								class="h-full bg-[#00aaff] transition-all duration-1000"
+								style="width: {activeArrival ? Math.min(100, Math.max(10, 100 - (activeArrival.etaSeconds / 1800) * 100)) : 0}%"
+							></div>
+						</div>
 					</div>
-				</div>
 
-				<div class="flex flex-col items-end">
-					<span class={`font-black leading-none ${emphasis ? 'text-6xl' : 'text-5xl'} text-[#00aaff] tracking-tighter`}>
-						{getEtaDisplay(activeArrival)}
-					</span>
-					<span class="text-[0.6rem] font-black uppercase text-[#00aaff]/40 tracking-[0.25em] mt-2">Minutes</span>
-				</div>
+					<div class="flex flex-col items-end">
+						<span class={`font-black leading-none ${emphasis ? 'text-6xl' : 'text-5xl'} text-[#00aaff] tracking-tighter tabular-nums`}>
+							{getEtaDisplay(activeArrival)}
+						</span>
+						<span class="text-[0.6rem] font-black uppercase text-[#00aaff]/40 tracking-[0.25em] mt-2">Minutes</span>
+					</div>
+				{/key}
 			</div>
 
 			<div class="flex items-center justify-between border-t border-[#00aaff]/10 pt-4 mt-6">
 				<div class="flex items-center gap-2 text-[0.55rem] font-black uppercase tracking-[0.2em] text-[#00aaff]/30">
-					Vektor Telemetry: <span class="text-white/20">{activeArrival ? 'LIVE' : 'MOCK'}</span>
+					Vektor Telemetry: <span class="text-white/20 uppercase">{activeArrival ? 'Live' : 'Seek'}</span>
 				</div>
 				<span class="text-[0.5rem] font-bold text-[#00aaff]/20 uppercase tracking-widest">{route.agencyId}</span>
 			</div>
